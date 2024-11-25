@@ -1,10 +1,11 @@
-const express = require('express');
+import express from "express"
+import controller from "../controller/employeeTransferController.js";
 const router = express.Router();
-const employeeTransferController=require("../controller/employeeTransferController")
+router.post("/bulkupload",controller.bulkUpload)
+router.post("/get",controller.getdata)
+router.post("/update",controller.updatestatus)
+router.post("/single",controller.Postdata)
 
-router.post("/bulkupload",employeeTransferController.bulkUpload)
-router.get("/get",employeeTransferController.getdata)
-router.post("/update",employeeTransferController.updatestatus)
-router.post("/single",employeeTransferController.Postdata)
+const employeeTransferRouter = router;
 
-module.exports = router;
+export default employeeTransferRouter;

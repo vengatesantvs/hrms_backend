@@ -1,5 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const {sequelize} = require('../server');
+export default function employeetransferdatas(sequelize, DataTypes) {
     const EmployeeTransfer = sequelize.define('employeetransfer', {
       Absorption_Transfer_Ltr_No: {
         type: DataTypes.STRING,
@@ -95,6 +94,7 @@ const {sequelize} = require('../server');
         tableName: 'employeetransfer',  
   timestamps: true 
     });
-  
-    module.exports=EmployeeTransfer
+    return EmployeeTransfer
+}
+    
   

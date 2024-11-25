@@ -1,5 +1,6 @@
-const EmployeeTransfer = require('../models/EmployeeTransfer');
-const {Op} =require("sequelize")
+import db from '../models/index.js';
+const EmployeeTransfer =db.employeetransfer;
+import { Op } from 'sequelize';
 const mapFields = (data) => {
   return data.map((item) => ({
     Absorption_Transfer_Ltr_No: item['«Absorption_Transfer_Ltr_No»'],
@@ -48,6 +49,7 @@ const bulkUpload = async (req, res) => {
     res.status(201).json({
       message: 'Bulk upload successful',
       data: result,
+      requestSuccessful:true
     });
  
   
@@ -56,20 +58,21 @@ const bulkUpload = async (req, res) => {
     res.status(500).json({
       message: 'Bulk upload failed',
       error: error.message,
+      requestSuccessful:false
     });
   }
 };
 
 const getdata = async (req, res) => {
   try {
-    const {employeeCodes} = req.query; // assuming array of objects from the request
-    const arrayofemployeecodes=employeeCodes.split(",")
-    console.log(arrayofemployeecodes,"ecode")
+    const {employeeCodes} = req.body; // assuming array of objects from the request
+    console.log(typeof employeeCodes,"hiii")
+  
     const result = await EmployeeTransfer.findAll({
       attributes: { exclude: ['id','createdAt', 'updatedAt'] },
       where: {
         Employee_Code: {
-          [Op.in]: arrayofemployeecodes,
+          [Op.in]: employeeCodes,
         },
         
       }
@@ -78,6 +81,7 @@ const getdata = async (req, res) => {
     res.status(200).json({
       message: 'get data successfully',
       data: result,
+      requestSuccessful:true
     });
  
   
@@ -86,6 +90,7 @@ const getdata = async (req, res) => {
     res.status(500).json({
       message: 'server error please trry again later',
       error: error.message,
+      requestSuccessful:false
     });
   }
 };
@@ -93,11 +98,11 @@ const getdata = async (req, res) => {
 const updatestatus = async (req, res) => {
   try {
     const {body}=req
-    const {employeeCodes} = req.query; // assuming array of objects from the request
-    const arrayofemployeecodes=employeeCodes.split(",")
+    const {employeecode} = body; // assuming array of objects from the request
     console.log(body,"body")
+    const arrayofemployeecodes=employeecode.split(",")
     const result = await EmployeeTransfer.update(
-       body
+       body.data
       ,
       {
       where: {
@@ -111,6 +116,7 @@ const updatestatus = async (req, res) => {
     res.status(200).json({
       data:result,
       message: 'data update successfully',
+      requestSuccessful:true
     });
  
   
@@ -119,6 +125,7 @@ const updatestatus = async (req, res) => {
     res.status(500).json({
       message: 'server error please trry again later',
       error: error.message,
+      requestSuccessful:false
     });
   }
 };
@@ -141,6 +148,7 @@ const Postdata = async (req, res) => {
     res.status(201).json({
       message: 'data posted successful',
       data: result,
+      requestSuccessful:true
     });
  
   
@@ -149,10 +157,13 @@ const Postdata = async (req, res) => {
     res.status(500).json({
       message: 'data post failed',
       error: error.message,
+      requestSuccessful:false
     });
   }
 };
 
-module.exports = {
+const controller = {
   bulkUpload,getdata,updatestatus,Postdata
 };
+
+export default controller

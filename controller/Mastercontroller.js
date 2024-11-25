@@ -1,6 +1,6 @@
-const Company = require('../models/Companies');
-const Salutation = require('../models/Salutation');
-const {Op} =require("sequelize")
+import db from '../models/index.js';
+const Company = db.company
+const Salutation = db.salutation
 
 
 const getAllData = async (req, res) => {
@@ -18,19 +18,20 @@ const getAllData = async (req, res) => {
     res.status(200).json({
       message: 'get data successfully',
        Salutations,
-       Companies
+       Companies,
+       requestSuccessful:true
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       message: 'server error please trry again later',
       error: error.message,
+      requestSuccessful:false
     });
   }
 };
 
 
 
-module.exports = {
-  getAllData
-};
+ const controller={getAllData}
+ export default controller

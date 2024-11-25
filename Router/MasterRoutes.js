@@ -1,6 +1,8 @@
-const express = require('express');
+import express from 'express'
 const router = express.Router();
-const mastercontroller=require("../controller/Mastercontroller")
+import controller from '../controller/Mastercontroller.js';
+router.get("/getAll",controller.getAllData)
 
-router.get("/getAll",mastercontroller.getAllData)
-module.exports = router;
+const masterRouter = router;
+
+export default masterRouter;

@@ -1,6 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const {sequelize} = require('../server');
 
+export default function userdatas(sequelize, DataTypes) {
   const User = sequelize.define('User', {
     id: {
       type: DataTypes.INTEGER,
@@ -22,5 +21,6 @@ const {sequelize} = require('../server');
       timestamps: true, 
     
   });
+  return User
 
-module.exports=User
+}

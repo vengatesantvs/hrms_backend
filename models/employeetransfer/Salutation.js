@@ -1,13 +1,12 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const {sequelize} = require('../server');
 
-  const Company = sequelize.define('Company', {
+export default function salutationdatas(sequelize, DataTypes) {
+  const Salutation = sequelize.define('Salutation', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    Companies: {
+    Salutations: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -18,5 +17,6 @@ const {sequelize} = require('../server');
       timestamps: true, 
     
   });
+  return Salutation
 
-module.exports=Company
+}
