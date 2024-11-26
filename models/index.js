@@ -33,13 +33,14 @@ import userdatas from './employeetransfer/Users.js';
 import companydatas from './employeetransfer/Companies.js';
 import employeetransferdatas from './employeetransfer/EmployeeTransfer.js';
 import salutationdatas from './employeetransfer/Salutation.js';
-
+import vendordatas from './employeeportal/vendor.js';
+import employeedatas from './employeeportal/employee.js';
 db.user = userdatas(sequelize, DataTypes);
 db.company=companydatas(sequelize,DataTypes)
 db.employeetransfer = employeetransferdatas(sequelize, DataTypes);
 db.salutation=salutationdatas(sequelize,DataTypes)
-
-
+db.vendor=vendordatas(sequelize,DataTypes)
+db.employee=employeedatas(sequelize,DataTypes)
 sequelize.sync({ force: false })  // force: true drops the table and recreates it, false ensures it's created only if it doesn't exist
   .then(() => {
     console.log('Tables have been created');
