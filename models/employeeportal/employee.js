@@ -88,9 +88,6 @@ export default function employeedatas(sequelize, DataTypes) {
       },
       emailId: {
         type: DataTypes.STRING,
-        validate: {
-          isEmail: true,
-        },
       },
       fatherName: {
         type: DataTypes.STRING,

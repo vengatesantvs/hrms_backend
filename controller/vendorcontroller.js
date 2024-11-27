@@ -40,6 +40,29 @@ const getVendor = async (req, res) => {
         limit,
         offset,
     });
+    const count=await vendor.count()
+
+console.log(data,"data")
+    res.status(200).json({
+      message: 'vendor data fetched successfully',
+      data,
+      count,
+      requestSuccessful:true
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'server error please trry again later',
+      error: error.message,
+      requestSuccessful:false
+    });
+  }
+};
+
+const getOneVendor = async (req, res) => {
+  try {
+   
+    const data = await vendor.findByPk(req.body.id);
 console.log(data,"data")
     res.status(200).json({
       message: 'vendor data fetched successfully',
@@ -56,7 +79,25 @@ console.log(data,"data")
   }
 };
 
+const updatevendor = async (req, res) => {
+  try {
+    const { id, reqdata } = req.body; // Destructure `id` and `data` from `req.body`
+    const data = await vendor.update(reqdata,{where:{id:id}});
+    res.status(200).json({
+      message: 'vendor updated successfully',
+       data,
+       requestSuccessful:true
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'server error please trry again later',
+      error: error.message,
+      requestSuccessful:false
+    });
+  }
+};
 
 
- const controller={createvendor,getVendor}
+ const controller={createvendor,getVendor,getOneVendor,updatevendor}
  export default controller

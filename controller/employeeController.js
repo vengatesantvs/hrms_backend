@@ -16,13 +16,13 @@ const generateEmpCode = async () => {
       newGrnNo = parseInt(lastGrnNo, 10) + 1;
     }
   
-    const paddedGrnNo = String(newGrnNo).padStart(6, '0');
-    return `${paddedGrnNo}`;
+    return newGrnNo;
   };
 const creatEmployee = async (req, res) => {
     try {
         const generatedcode=await generateEmpCode()
-        const  employeecode=`KI${req.body.vendorCode}${generatedcode}`
+        const paddedNo = String(generatedcode).padStart(6, '0');
+        const  employeecode=`KI${req.body.vendorCode}${paddedNo}`
         const datavalue={...req.body,empCode:employeecode}
       const data = await employee.create(datavalue);
   
@@ -47,7 +47,7 @@ const getEmployee = async (req, res) => {
     console.log(req.body,"body")
     const searchCondition = searchKey ? {
       [Op.or]: [
-        { vendor_code: { [Op.like]: `%${searchKey}%` } },
+        { vendorCode: { [Op.like]: `%${searchKey}%` } },
         { empCode: { [Op.like]: `%${searchKey}%` } },
         { employeeName: { [Op.like]: `%${searchKey}%` } },
 
@@ -60,9 +60,31 @@ const getEmployee = async (req, res) => {
         limit,
         offset,
     });
+    const count=await employee.count()
 console.log(data,"data")
     res.status(200).json({
-      message: 'vendor data fetched successfully',
+      message: 'employee data fetched successfully',
+      data,
+      count,
+      requestSuccessful:true
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'server error please trry again later',
+      error: error.message,
+      requestSuccessful:false
+    });
+  }
+};
+
+const getOneEmployee = async (req, res) => {
+  try {
+   
+    const data = await employee.findByPk(req.body.id);
+console.log(data,"data")
+    res.status(200).json({
+      message: 'employee data fetched successfully',
       data,
       requestSuccessful:true
     });
@@ -76,7 +98,58 @@ console.log(data,"data")
   }
 };
 
+const updateEmployee = async (req, res) => {
+  try {
+    const { id, reqdata } = req.body; // Destructure `id` and `data` from `req.body`
+    const data = await employee.update(reqdata,{where:{id:id}});
+    res.status(200).json({
+      message: 'employee updated successfully',
+       data,
+       requestSuccessful:true
+    })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'server error please trry again later',
+      error: error.message,
+      requestSuccessful:false
+    });
+  }
+};
 
+const bulkCreateEmployee = async (req, res) => {
+  try {
+    const employees = req.body; // Expecting an array of employee data
+    const createdEmployees = [];
+    const generatedCode = await generateEmpCode();
+    for (let i = 0; i < employees.length; i++) {
+      // Generate unique employee code
+      const newNo=generatedCode+i
+      const paddedNo = String(newNo).padStart(6, '0');
+      const employeeCode = `KI${employees[i].vendorCode}${paddedNo}`;
 
- const controller={creatEmployee,getEmployee}
+      // Add empCode to the employee data
+      const dataValue = { ...employees[i], empCode: employeeCode };
+
+      // Create employee record in the database
+      const createdEmployee = await employee.create(dataValue);
+      createdEmployees.push(createdEmployee);
+    }
+
+    res.status(200).json({
+      message: 'Employees created successfully',
+      data: createdEmployees,
+      requestSuccessful: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Server error, please try again later',
+      error: error.message,
+      requestSuccessful: false,
+    });
+  }
+};
+
+ const controller={creatEmployee,getEmployee,getOneEmployee,updateEmployee,bulkCreateEmployee}
  export default controller
