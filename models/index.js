@@ -35,12 +35,37 @@ import employeetransferdatas from './employeetransfer/EmployeeTransfer.js';
 import salutationdatas from './employeetransfer/Salutation.js';
 import vendordatas from './employeeportal/vendor.js';
 import employeedatas from './employeeportal/employee.js';
+import menudatas from './employeetransfer/menuList.js';
+import subMenudatas from './employeetransfer/subMenulist.js';
+import rolesettingsdatas from './employeetransfer/roleSettings.js';
+import roleSubmenuButtondatas from './employeetransfer/roleSubMenuButton.js';
+import userrolemapDatas from './employeetransfer/userRoleMapping.js';
+import roledatas from './employeetransfer/roles.js';
+import roleMenuTabSettingsDatas from './employeetransfer/roleMenuTabSettings.js';
+
 db.user = userdatas(sequelize, DataTypes);
 db.company=companydatas(sequelize,DataTypes)
 db.employeetransfer = employeetransferdatas(sequelize, DataTypes);
 db.salutation=salutationdatas(sequelize,DataTypes)
 db.vendor=vendordatas(sequelize,DataTypes)
 db.employee=employeedatas(sequelize,DataTypes)
+db.userrolemaps = userrolemapDatas(sequelize, DataTypes);
+db.role = roledatas(sequelize, DataTypes);
+db.menudatas = menudatas(sequelize, DataTypes);
+db.subMenudatas = subMenudatas(sequelize, DataTypes);
+db.rolesettingsdatas = rolesettingsdatas(sequelize, DataTypes);
+db.roleSubmenuButtons = roleSubmenuButtondatas(sequelize, DataTypes);
+db.roleMentuTabSettings = roleMenuTabSettingsDatas(sequelize, DataTypes);
+
+db.userrolemaps.belongsTo(db.role, { foreignKey: 'roleId', as: 'rolemap' });
+db.subMenudatas.hasMany(db.roleSubmenuButtons, {
+  foreignKey: 'submenuId',
+  as: 'submenuButtonsMap',
+});
+db.roleSubmenuButtons.belongsTo(db.subMenudatas, {
+  foreignKey: 'submenuId',
+  as: 'submenuButtons',
+});
 sequelize.sync({ force: false })  // force: true drops the table and recreates it, false ensures it's created only if it doesn't exist
   .then(() => {
     console.log('Tables have been created');
