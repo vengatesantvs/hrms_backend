@@ -1,6 +1,7 @@
 import db from '../models/index.js';
 const employee = db.employee
 import { Op } from 'sequelize';
+import excel from 'exceljs';
 
 const generateEmpCode = async () => {
   
@@ -49,7 +50,7 @@ const getEmployee = async (req, res) => {
       [Op.or]: [
         { vendorCode: { [Op.like]: `%${searchKey}%` } },
         { empCode: { [Op.like]: `%${searchKey}%` } },
-        { employeeName: { [Op.like]: `%${searchKey}%` } },
+        // { employeeName: { [Op.like]: `%${searchKey}%` } },
 
       ]
     } : {};
@@ -151,5 +152,101 @@ const bulkCreateEmployee = async (req, res) => {
   }
 };
 
- const controller={creatEmployee,getEmployee,getOneEmployee,updateEmployee,bulkCreateEmployee}
+const EmployeeReportService = async (reqData) => {
+  try {
+    const {  fromDate, toDate,vendorCode } = reqData;
+
+    const dateCondition =  { createdAt: { [Op.between]: [fromDate, toDate] } } 
+    let result = await employee.findAll({
+      where: {
+        vendorCode:vendorCode,
+        ...dateCondition, // Add the date filter condition
+      },
+     
+    
+      raw:true
+    });
+   
+    return result;
+  } catch (err) {
+    console.error('employee Search fetching error', err);
+  }
+};
+
+const EmployeeReport = async (req, res , next) => {   
+  let data={}
+  try{ 
+    data= await EmployeeReportService(req.body);
+   console.log(data,"data")
+   if (!data || data.length === 0) {
+    res.status(500).json({ message: "No records found for the given criteria." });
+    return;
+  }
+   const responsedata=data.map((item)=>{
+    // const date=new Date(item.invoice_date).toISOString()
+    const createdDate=(item.createdAt).toISOString()
+
+    // const dateformat=date.slice(8,10)+"-"+date.slice(5,7)+"-"+date.slice(0,4)
+    const createddateformat=createdDate.slice(8,10)+"-"+createdDate.slice(5,7)+"-"+createdDate.slice(0,4)
+
+
+    return(
+      {
+      ...item,
+      createdAt:createddateformat
+    }
+  )
+   })
+    
+    const workbook = new excel.Workbook();
+    const worksheet = workbook.addWorksheet("Employee Report");
+    const headers=["SL NO",...Object.keys(responsedata[0])]
+     const rowData = [headers, ...responsedata.map((item,index)=>([index+1,...Object.values(item)]))];
+    rowData.forEach((row) => worksheet.addRow(row));
+  
+    // Dynamically calculate and set column widths
+    worksheet.columns = headers.map((header, colIndex) => {
+      const maxLength = rowData.reduce((max, row) => {
+        const cellValue = row[colIndex] ? row[colIndex].toString() : ""; // Ensure value is string
+        return Math.max(max, cellValue.length);
+      }, header.length); // Start with the header length
+  
+      return {
+        header,
+        key: header.toLowerCase(),
+        width: maxLength + 5, // Add some padding for better appearance
+      };
+    });
+  
+    // Style the header row
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "11164b" },
+      };
+      cell.alignment = { horizontal: "center" };
+    });
+  
+    // Send File as Response
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=EmployeeReport.xlsx"
+    );
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+  
+    await workbook.xlsx.write(res);
+    res.end()
+   
+   } catch (err) {
+       console.error('employee Contrller Error:', err);
+   next(err);
+   }
+   }
+
+ const controller={creatEmployee,getEmployee,getOneEmployee,updateEmployee,bulkCreateEmployee,EmployeeReport}
  export default controller

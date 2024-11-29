@@ -6,6 +6,8 @@ router.post("/getAll",controller.getEmployee)
 router.post("/getOne",controller.getOneEmployee)
 router.post("/update",controller.updateEmployee)
 router.post("/bulkUpload",controller.bulkCreateEmployee)
+router.post("/report",controller.EmployeeReport)
+
 
 const employeeRouter = router;
 
