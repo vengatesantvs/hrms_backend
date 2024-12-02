@@ -62,11 +62,15 @@ const getEmployee = async (req, res) => {
         offset,
     });
     const count=await employee.count()
+    const vendorEmployeeCount=await employee.count({where:{vendorCode:searchKey}})
+
+
 console.log(data,"data")
     res.status(200).json({
       message: 'employee data fetched successfully',
       data,
       count,
+      vendorEmployeeCount,
       requestSuccessful:true
     });
   } catch (error) {
