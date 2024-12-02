@@ -1,4 +1,3 @@
-import JwtConfig from '../config/jwtConfig.js';
 import JWT from 'jsonwebtoken';
 import dotenv from "dotenv"
 dotenv.config()

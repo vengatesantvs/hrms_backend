@@ -42,7 +42,9 @@ import roleSubmenuButtondatas from './employeetransfer/roleSubMenuButton.js';
 import userrolemapDatas from './employeetransfer/userRoleMapping.js';
 import roledatas from './employeetransfer/roles.js';
 import roleMenuTabSettingsDatas from './employeetransfer/roleMenuTabSettings.js';
-
+import allowancedatas from './payroll/Allowance.js';
+import deductiondatas from './payroll/Deductions.js';
+import fixeddeductiondatas from './payroll/FixedDeductions.js';
 db.user = userdatas(sequelize, DataTypes);
 db.company=companydatas(sequelize,DataTypes)
 db.employeetransfer = employeetransferdatas(sequelize, DataTypes);
@@ -56,7 +58,9 @@ db.subMenudatas = subMenudatas(sequelize, DataTypes);
 db.rolesettingsdatas = rolesettingsdatas(sequelize, DataTypes);
 db.roleSubmenuButtons = roleSubmenuButtondatas(sequelize, DataTypes);
 db.roleMentuTabSettings = roleMenuTabSettingsDatas(sequelize, DataTypes);
-
+db.allowances=allowancedatas(sequelize,DataTypes)
+db.deductions=deductiondatas(sequelize,DataTypes)
+db.fixeddeductions=fixeddeductiondatas(sequelize,DataTypes)
 db.userrolemaps.belongsTo(db.role, { foreignKey: 'roleId', as: 'rolemap' });
 db.subMenudatas.hasMany(db.roleSubmenuButtons, {
   foreignKey: 'submenuId',

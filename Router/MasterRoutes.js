@@ -1,7 +1,8 @@
 import express from 'express'
 const router = express.Router();
 import controller from '../controller/Mastercontroller.js';
-router.get("/getAll",controller.getAllData)
+import JwtMiddleware from '../jwtmiddleware.js';
+router.get("/getAll",JwtMiddleware.checkToken,controller.getAllData)
 
 const masterRouter = router;
 

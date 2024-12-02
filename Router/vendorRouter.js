@@ -1,10 +1,11 @@
 import express from "express"
 const router = express.Router();
 import controller from "../controller/vendorcontroller.js";
-router.post("/create",controller.createvendor)
-router.post("/getAll",controller.getVendor)
-router.post("/getOne",controller.getOneVendor)
-router.post("/update",controller.updatevendor)
+import JwtMiddleware from "../jwtmiddleware.js";
+router.post("/create",JwtMiddleware.checkToken,controller.createvendor)
+router.post("/getAll",JwtMiddleware.checkToken,controller.getVendor)
+router.post("/getOne",JwtMiddleware.checkToken,controller.getOneVendor)
+router.post("/update",JwtMiddleware.checkToken,controller.updatevendor)
 
 
 

@@ -13,6 +13,7 @@ import employeeTransferRouter from './Router/employeeTransferRoutes.js';
 import pincodeRouter from './Router/pincodeRouter.js';
 import vendorRouter from './Router/vendorRouter.js';
 import employeeRouter from './Router/employeeRouter.js';
+import payRollRouter from './Router/payRollRouter.js';
     app.use(express.json({ limit: '50mb' }));  // You can adjust the limit based on your requirements
     app.use(express.urlencoded({ limit: '50mb', extended: true }));
     app.use(cors());
@@ -24,6 +25,7 @@ app.use("/master",masterRouter)
 app.use("/pincode",pincodeRouter)
 app.use("/vendor",vendorRouter)
 app.use("/employee",employeeRouter)
+app.use("/payRoll",payRollRouter)
 
 
 // Start server
