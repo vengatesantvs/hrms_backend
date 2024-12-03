@@ -143,6 +143,15 @@ export default function employeedatas(sequelize, DataTypes) {
       },
       empCode:{
         type: DataTypes.STRING,
+      },
+      outletCode:{
+        type: DataTypes.STRING,
+      },
+      outletName:{
+        type: DataTypes.STRING,
+      },
+      grade:{
+        type: DataTypes.STRING,
       }
 
     },{
