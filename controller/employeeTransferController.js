@@ -69,7 +69,7 @@ const getdata = async (req, res) => {
     console.log(typeof employeeCodes,"hiii")
   
     const result = await EmployeeTransfer.findAll({
-      attributes: { exclude: ['id','createdAt', 'updatedAt'] },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       where: {
         Employee_Code: {
           [Op.in]: employeeCodes,
